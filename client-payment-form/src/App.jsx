@@ -1,8 +1,5 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-// import PaymentFormPage from "./PaymentFormPage";
-// import PaymentSuccessPage from "./PaymentSuccessPage";
-import PaymentPage from "./DemoForm";
 import { Suspense } from "react";
 import { lazy } from "react";
 import Loader from "./Loader";
@@ -13,7 +10,6 @@ function App() {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        {/* <Route path="/" element={<PaymentFormPage />} /> */}
         <Route path="/:priceId" element={<PaymentFormPage />} />
         <Route
           path="/:priceId/payment-success"
