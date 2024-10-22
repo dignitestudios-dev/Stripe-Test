@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useNavigate, useParams } from "react-router-dom";
 import paymentServices from "./services/paymentServices";
+import { BASE_URL } from "./api";
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -21,7 +22,7 @@ const PaymentForm = () => {
     const fetchCustomerInfo = async () => {
       try {
         const res = await paymentServices.handleFetchCustomerByPriceId(priceId);
-        console.log("customer info >> ", res.data);
+        // console.log("customer info >> ", res.data);
         setCustomerEmail(res?.data?.email);
         setCustomerName(res?.data?.name);
         setAmount(res?.data?.amount);
@@ -51,7 +52,7 @@ const PaymentForm = () => {
 
     // Call backend to create the payment intent
     const response = await fetch(
-      "http://localhost:2000/api/customers/payment/create-payment-intent",
+      `${BASE_URL}/customers/payment/create-payment-intent`,
       {
         method: "POST",
         headers: {

@@ -217,11 +217,11 @@ module.exports.CreateCustomer = async (req, res) => {
     const product = await stripe.products.create({
       name: projectTitle || description,
       description: `Product ordered by ${name}`,
-      metadata: {
-        salesPersonName,
-        salesPersonDepartment,
-        customerEmail: email,
-      },
+      // metadata: {
+      //   salesPersonName,
+      //   salesPersonDepartment,
+      //   customerEmail: email,
+      // },
     });
 
     // Step 3: Create a price for the product
@@ -230,10 +230,10 @@ module.exports.CreateCustomer = async (req, res) => {
       unit_amount: unitAmount,
       currency: "usd",
       nickname: description,
-      metadata: {
-        title: projectTitle || "Demo Title",
-        description,
-      },
+      // metadata: {
+      //   title: projectTitle || "Demo Title",
+      //   description,
+      // },
     });
 
     // Step 4: Store the customer in your local database
@@ -392,7 +392,7 @@ module.exports.ArchivePrice = async (req, res) => {
       active: false,
     });
 
-    const priceForm = await Customers.findOneAndDelete({ priceId }); // Deletes and returns the record
+    const priceForm = await Customers.findOneAndDelete({ priceId });
 
     if (!priceForm) {
       return res
