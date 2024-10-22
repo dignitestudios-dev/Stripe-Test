@@ -251,7 +251,7 @@ module.exports.CreateCustomer = async (req, res) => {
     });
 
     // Step 5: Generate a payment form URL
-    const pageUrl = `https://client-payment-form.vercel.app/${price.id}`;
+    const pageUrl = `https://stripe-test-pdm7.vercel.app/${price.id}`;
     customer.pageUrl = pageUrl;
     await customer.save();
 
