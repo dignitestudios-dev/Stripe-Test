@@ -10,6 +10,8 @@ const CustomerSchema = new mongoose.Schema(
     priceId: { type: String },
     salesPersonName: { type: String, required: true },
     salesPersonDepartment: { type: String, required: true },
+    projectTitle: { type: String },
+    descriptorSuffix: { type: String },
   },
   { collection: "Customers" }
 );

@@ -44,13 +44,13 @@ const CustomersList = () => {
           <thead className="text-xs uppercase bg-red-50">
             <tr>
               <th scope="col" className="px-6 py-4 text-xs">
-                Name
+                Client Name
               </th>
               <th scope="col" className="px-6 py-4 text-xs">
-                Email
+                Client Email
               </th>
               <th scope="col" className="px-6 py-4 text-xs">
-                Phone No.
+                Project Title
               </th>
               <th scope="col" className="px-6 py-4 text-xs">
                 Amount
@@ -74,7 +74,7 @@ const CustomersList = () => {
                     {c?.name}
                   </th>
                   <td className="px-6 py-4 text-xs">{c?.email}</td>
-                  <td className="px-6 py-4 text-xs">{c?.phone}</td>
+                  <td className="px-6 py-4 text-xs">{c?.projectTitle}</td>
                   <td className="px-6 py-4 text-xs">${c?.amount}</td>
                   <td className="px-6 py-4 text-xs">
                     {c?.salesPersonName ? c?.salesPersonName : "N/A"}

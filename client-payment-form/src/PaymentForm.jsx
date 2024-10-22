@@ -15,6 +15,7 @@ const PaymentForm = () => {
   const [amount, setAmount] = useState("");
   const navigate = useNavigate();
   const [projectDescription, setProjectDescription] = useState("");
+  const [descriptorSuffix, setDescriptorSuffix] = useState("");
 
   useEffect(() => {
     const fetchCustomerInfo = async () => {
@@ -25,6 +26,7 @@ const PaymentForm = () => {
         setCustomerName(res?.data?.name);
         setAmount(res?.data?.amount);
         setProjectDescription(res?.data?.description);
+        setDescriptorSuffix(res?.data?.descriptorSuffix);
       } catch (error) {
         console.log(error);
       }
@@ -59,6 +61,7 @@ const PaymentForm = () => {
           priceId,
           email: customerEmail,
           name: customerName,
+          descriptorSuffix,
         }), // Send the priceId to create Payment Intent
       }
     );
