@@ -1,1 +1,1 @@
-export const BASE_URL = `http://localhost:2000/api`;
+export const BASE_URL = `http://18.217.130.44:5173/api`;

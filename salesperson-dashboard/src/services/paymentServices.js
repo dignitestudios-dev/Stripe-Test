@@ -14,7 +14,7 @@ const handleResponse = async (response) => {
 const handleFetchCustomerByPriceId = async (priceId) => {
   try {
     const response = await axios.get(
-      `http://localhost:2000/api/customers/get-customer/${priceId}`
+      `http://18.217.130.44:5173/api/customers/get-customer/${priceId}`
     );
     return await handleResponse(response);
   } catch (error) {
