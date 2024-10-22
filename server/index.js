@@ -15,6 +15,10 @@ const { DBConnection } = require("./db/connection");
 DBConnection();
 require("./db/schema/customerSchema");
 
+app.get("/", (req, res, next) =>
+  res.status(200).json({ message: "Welcome to me app" })
+);
+
 app.use("/api/customers", require("./routes/customerRoutes"));
 
 // app.post("/create-payment-intent", async (req, res) => {
