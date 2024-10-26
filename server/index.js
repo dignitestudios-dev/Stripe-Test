@@ -9,33 +9,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { DBConnection } = require("./db/connection");
 
 DBConnection();
+// schemas
 require("./db/schema/customerSchema");
+require("./db/schema/adminSchema");
+require("./db/schema/employeeSchema");
+require("./db/schema/adminOtpSchema");
 
 app.get("/", (req, res, next) =>
   res.status(200).json({ message: "Welcome to me app" })
 );
 
+// admin routes
+app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/customers", require("./routes/customerRoutes"));
-
-// app.post("/create-payment-intent", async (req, res) => {
-//   try {
-//     const { amount, currency, paymentMethodType } = req.body;
-
-//     const paymentIntent = await stripe.paymentIntents.create({
-//       amount: amount,
-//       currency: currency,
-//       payment_method_types: [paymentMethodType],
-//     });
-
-//     res.status(200).json({ clientSecret: paymentIntent.client_secret });
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
+app.use("/api/employee", require("./routes/employeeRoutes"));
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

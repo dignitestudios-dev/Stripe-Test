@@ -11,17 +11,17 @@ const handleResponse = async (response) => {
 
 const handleCreateCustomer = async (data) => {
   try {
-    const response = await axios.post(`${BASE_URL}/create-customer`, data);
+    const response = await axios.post(
+      `${BASE_URL}/customers/create-customer`,
+      data
+    );
     return await handleResponse(response);
   } catch (error) {
-    // Check if it's a server response error
     if (error.response) {
-      // Server responded with a status code out of the 2xx range
       const statusCode = error.response.status;
       const errorMessage = error.response.data.message || "Server Error";
 
       if (statusCode >= 400 && statusCode < 500) {
-        // Client errors (400-499)
         if (statusCode === 400) {
           throw new Error("Bad request. Please check the input data.");
         } else if (statusCode === 401) {
@@ -34,14 +34,11 @@ const handleCreateCustomer = async (data) => {
           throw new Error(`Client Error: ${errorMessage}`);
         }
       } else if (statusCode >= 500) {
-        // Server errors (500-599)
         throw new Error(`Server Error: ${errorMessage}`);
       }
     } else if (error.request) {
-      // The request was made, but no response was received
       throw new Error("Network error. Please check your internet connection.");
     } else {
-      // Something happened in setting up the request that triggered an error
       throw new Error(`Unexpected Error: ${error.message}`);
     }
   }
@@ -49,7 +46,7 @@ const handleCreateCustomer = async (data) => {
 
 const handleFetchCustomers = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/get-customers`);
+    const response = await axios.get(`${BASE_URL}/customers/get-customers`);
     return await handleResponse(response);
   } catch (error) {
     throw new Error(
@@ -60,9 +57,12 @@ const handleFetchCustomers = async () => {
 
 const handleDeleteFormUrl = async (priceId) => {
   try {
-    const response = await axios.delete(`${BASE_URL}/delete-customer`, {
-      data: { priceId },
-    });
+    const response = await axios.delete(
+      `${BASE_URL}/customers/delete-customer`,
+      {
+        data: { priceId },
+      }
+    );
     return await handleResponse(response);
   } catch (error) {
     throw new Error(

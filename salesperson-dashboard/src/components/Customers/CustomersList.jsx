@@ -25,7 +25,6 @@ const CustomersList = () => {
       console.log("deleted res >> ", res);
       alert(res.message);
 
-      // Update the customers list by filtering out the deleted customer
       setCustomers((prevCustomers) =>
         prevCustomers.filter((customer) => customer.priceId !== priceId)
       );
@@ -36,7 +35,7 @@ const CustomersList = () => {
   };
 
   return (
-    <div className="padding-x py-12">
+    <div className="padding-x py-12 bg-gray-50 min-h-screen">
       <h1 className="font-semibold text-base mb-6">Customers List</h1>
 
       <div className="relative overflow-x-auto">
@@ -58,8 +57,12 @@ const CustomersList = () => {
               <th scope="col" className="px-6 py-4 text-xs">
                 Salesperson Name
               </th>
+
               <th scope="col" className="px-6 py-4 text-xs">
                 Payment Form URL
+              </th>
+              <th scope="col" className="px-6 py-4 text-xs">
+                Status
               </th>
               <th scope="col" className="px-6 py-4 text-xs">
                 Delete url
@@ -83,6 +86,14 @@ const CustomersList = () => {
                     <a target="_blank" href={c?.pageUrl} className="underline">
                       Open Form
                     </a>
+                  </td>
+                  <td className="px-6 py-4 text-xs">
+                    <button
+                      disabled="disabled"
+                      className="bg-yellow-100 text-yellow-500 font-medium text-xs px-4 py-2 rounded-lg"
+                    >
+                      Pending
+                    </button>
                   </td>
                   <td className="px-6 py-4 text-xs">
                     <button

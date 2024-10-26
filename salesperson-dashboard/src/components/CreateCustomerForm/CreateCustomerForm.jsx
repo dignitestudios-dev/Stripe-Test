@@ -38,13 +38,13 @@ const validate = (values) => {
     errors.amount = "Amount can not be 0";
   }
 
-  if (!values.descriptorSuffix) {
-    errors.descriptorSuffix = "Required";
-  } else if (values.descriptorSuffix < 5) {
-    errors.descriptorSuffix = "Must be grater than 5 characters.";
-  } else if (values.descriptorSuffix > 12) {
-    errors.descriptorSuffix = "Cannot be grater than 12 characters.";
-  }
+  // if (!values.descriptorSuffix) {
+  //   errors.descriptorSuffix = "Required";
+  // } else if (values.descriptorSuffix < 5) {
+  //   errors.descriptorSuffix = "Must be grater than 5 characters.";
+  // } else if (values.descriptorSuffix > 12) {
+  //   errors.descriptorSuffix = "Cannot be grater than 12 characters.";
+  // }
 
   return errors;
 };
@@ -59,7 +59,7 @@ const CreateCustomerForm = () => {
       salesPersonName: "",
       salesPersonDepartment: "",
       projectTitle: "",
-      descriptorSuffix: "",
+      descriptorSuffix: "ClickTap",
     },
     validate,
     onSubmit: async (values, { resetForm }) => {
@@ -106,7 +106,7 @@ const CreateCustomerForm = () => {
               className="border  p-3 text-sm outline-none w-full"
             />
             {formik.errors.name ? (
-              <div className="text-xs text-red-500">{formik.errors.name}</div>
+              <div className="text-xs text-red-600">{formik.errors.name}</div>
             ) : null}
           </div>
           <div className="">
@@ -122,7 +122,7 @@ const CreateCustomerForm = () => {
               className="border  p-3 text-sm outline-none w-full"
             />
             {formik.errors.email ? (
-              <div className="text-xs text-red-500">{formik.errors.email}</div>
+              <div className="text-xs text-red-600">{formik.errors.email}</div>
             ) : null}
           </div>
         </div>
@@ -139,13 +139,13 @@ const CreateCustomerForm = () => {
             className="border  p-3 text-sm outline-none w-full"
           />
           {formik.errors.amount ? (
-            <div className="text-xs text-red-500">{formik.errors.amount}</div>
+            <div className="text-xs text-red-600">{formik.errors.amount}</div>
           ) : null}
         </div>
-        <h2 className="text-xl font-semibold mt-5">Project Info:</h2>
+        <h2 className="text-xl font-semibold mt-5">Product Info:</h2>
         <div className="">
           <label htmlFor="projectTitle" className="text-sm font-medium">
-            Project Title
+            Product Title
           </label>
           <input
             type="text"
@@ -156,7 +156,7 @@ const CreateCustomerForm = () => {
             className="border  p-3 text-sm outline-none w-full"
           />
           {formik.errors.projectTitle ? (
-            <div className="text-xs text-red-500">
+            <div className="text-xs text-red-600">
               {formik.errors.projectTitle}
             </div>
           ) : null}
@@ -175,7 +175,7 @@ const CreateCustomerForm = () => {
             rows={4}
           ></textarea>
           {formik.errors.description ? (
-            <div className="text-xs text-red-500">
+            <div className="text-xs text-red-600">
               {formik.errors.description}
             </div>
           ) : null}
@@ -187,13 +187,15 @@ const CreateCustomerForm = () => {
           <input
             type="text"
             name="descriptorSuffix"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.descriptorSuffix}
+            disabled
+            placeholder="ClickTap"
+            // onChange={formik.handleChange}
+            // onBlur={formik.handleBlur}
+            // value={formik.values.descriptorSuffix}
             className="border  p-3 text-sm outline-none w-full"
           />
           {formik.errors.descriptorSuffix ? (
-            <div className="text-xs text-red-500">
+            <div className="text-xs text-red-600">
               {formik.errors.descriptorSuffix}
             </div>
           ) : null}
@@ -213,7 +215,7 @@ const CreateCustomerForm = () => {
               className="border  p-3 text-sm outline-none w-full"
             />
             {formik.errors.salesPersonName ? (
-              <div className="text-xs text-red-500">
+              <div className="text-xs text-red-600">
                 {formik.errors.salesPersonName}
               </div>
             ) : null}
@@ -234,7 +236,7 @@ const CreateCustomerForm = () => {
               className="border  p-3 text-sm outline-none w-full"
             />
             {formik.errors.salesPersonDepartment ? (
-              <div className="text-xs text-red-500">
+              <div className="text-xs text-red-600">
                 {formik.errors.salesPersonDepartment}
               </div>
             ) : null}
@@ -244,7 +246,7 @@ const CreateCustomerForm = () => {
         <div className="">
           <button
             type="submit"
-            className="bg-red-500 text-white py-3  text-sm font-medium w-full"
+            className="bg-red-600 text-white py-3  text-sm font-medium w-full"
           >
             Create Link
           </button>

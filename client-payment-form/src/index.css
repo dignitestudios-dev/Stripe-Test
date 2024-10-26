@@ -16,7 +16,7 @@
 }
 
 .padding-x {
-  @apply px-4 md:px-8 lg:px-16 xl:px-20 2xl:px-40;
+  @apply px-4 md:px-8 lg:px-16 2xl:px-40;
 }
 
 .custom-shadow {
@@ -65,4 +65,8 @@
   100% {
     height: 10px;
   }
+}
+
+.bg-orange {
+  @apply bg-[#00C0FE];
 }
