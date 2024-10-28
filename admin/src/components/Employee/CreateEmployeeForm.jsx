@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { BASE_URL } from "../../api/api";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const validate = (values) => {
   const errors = {};
@@ -41,6 +42,28 @@ const validate = (values) => {
 
 const CreateEmployeeForm = () => {
   const navigate = useNavigate();
+  const [organizations, setOrganizations] = useState([]);
+  console.log("organizations >>", organizations);
+
+  const fetchOrgs = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/admin/get-organizations`);
+      console.log("orgs >>", res);
+      setOrganizations(res?.data?.data);
+    } catch (error) {
+      console.log("orgs err >>", error);
+    }
+  };
+
+  useEffect(() => {
+    document.title = "Add Employee";
+    fetchOrgs();
+  }, []);
+
+  const handleCancelAddUser = () => {
+    navigate("/");
+  };
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -94,7 +117,7 @@ const CreateEmployeeForm = () => {
 
   return (
     <div className="w-full bg-white p-10 ronuded-xl min-h-screen">
-      <h2 className="text-xl font-semibold text-gray-400 mb-6">Add New User</h2>
+      <h2 className="text-xl font-semibold text-gray-500 mb-8">Add New User</h2>
       <form onSubmit={formik.handleSubmit} class="w-full max-w-lg">
         <div class="flex flex-wrap -mx-3 mb-6">
           <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -105,7 +128,7 @@ const CreateEmployeeForm = () => {
               Employee Name
             </label>
             <input
-              class="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="name"
               type="text"
               placeholder="Jane"
@@ -114,9 +137,7 @@ const CreateEmployeeForm = () => {
               value={formik.values.name}
             />
             {formik.errors.name ? (
-              <div class="text-red-500 text-xs italic">
-                {formik.errors.name}
-              </div>
+              <div class="red-text text-xs italic">{formik.errors.name}</div>
             ) : null}
           </div>
           <div class="w-full md:w-1/2 px-3">
@@ -127,18 +148,16 @@ const CreateEmployeeForm = () => {
               Emplpoyee Email
             </label>
             <input
-              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="email"
               type="text"
               name="email"
-              placeholder="Doe"
+              placeholder="johndoe@gmail.com"
               onChange={formik.handleChange}
               value={formik.values.email}
             />
             {formik.errors.email ? (
-              <div class="text-red-500 text-xs italic">
-                {formik.errors.email}
-              </div>
+              <div class="red-text text-xs italic">{formik.errors.email}</div>
             ) : null}
           </div>
         </div>
@@ -151,7 +170,7 @@ const CreateEmployeeForm = () => {
               Password
             </label>
             <input
-              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="password"
               type="password"
               //   name="password"
@@ -160,7 +179,7 @@ const CreateEmployeeForm = () => {
               value={formik.values.password}
             />
             {formik.errors.password ? (
-              <div class="text-red-500 text-xs italic">
+              <div class="red-text text-xs italic">
                 {formik.errors.password}
               </div>
             ) : null}
@@ -176,7 +195,7 @@ const CreateEmployeeForm = () => {
               Job Position
             </label>
             <input
-              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="jobPosition"
               type="jobPosition"
               name="jobPosition"
@@ -185,7 +204,7 @@ const CreateEmployeeForm = () => {
               value={formik.values.jobPosition}
             />
             {formik.errors.jobPosition ? (
-              <div class="text-red-500 text-xs italic">
+              <div class="red-text text-xs italic">
                 {formik.errors.jobPosition}
               </div>
             ) : null}
@@ -203,7 +222,7 @@ const CreateEmployeeForm = () => {
             </label>
             <div class="relative">
               <select
-                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                class="block appearance-none w-full bg-gray-100 text-sm border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
                 id="department"
                 name="department"
                 onChange={formik.handleChange}
@@ -226,7 +245,7 @@ const CreateEmployeeForm = () => {
               </div>
             </div>
             {formik.errors.department ? (
-              <div class="text-red-500 text-xs italic">
+              <div class="red-text text-xs italic">
                 {formik.errors.department}
               </div>
             ) : null}
@@ -240,17 +259,18 @@ const CreateEmployeeForm = () => {
             </label>
             <div class="relative w-full">
               <select
-                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                class="block appearance-none w-full bg-gray-100 text-sm border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
                 id="organizatoin"
                 name="organization"
                 onChange={formik.handleChange}
                 value={formik.values.organization}
               >
-                <option selected value={"DS"}>
-                  DS
-                </option>
-                <option value={"CTS"}>CTS</option>
-                <option value={"LB"}>LB</option>
+                <option selected>Choose an organization</option>
+                {organizations?.map((org) => (
+                  <option key={org._id} value={org._id}>
+                    {org.organizationName}
+                  </option>
+                ))}
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <svg
@@ -263,7 +283,7 @@ const CreateEmployeeForm = () => {
               </div>
             </div>
             {formik.errors.organization ? (
-              <div class="text-red-500 text-xs italic">
+              <div class="red-text text-xs italic">
                 {formik.errors.organization}
               </div>
             ) : null}
@@ -274,13 +294,14 @@ const CreateEmployeeForm = () => {
         <div className="mt-8 flex items-center justify-start gap-3">
           <button
             type="submit"
-            className="bg-red-500 px-10 py-2.5 rounded text-center text-white font-medium"
+            className="red-bg px-8 py-2.5 rounded text-center text-white font-medium text-sm"
           >
             Add
           </button>
           <button
             type="button"
-            className="bg-gray-400 px-10 py-2.5 rounded text-center text-white font-medium"
+            onClick={handleCancelAddUser}
+            className="bg-gray-400 px-8 py-2.5 rounded text-center text-white font-medium text-sm"
           >
             Cancel
           </button>

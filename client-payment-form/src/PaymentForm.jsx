@@ -18,6 +18,8 @@ const PaymentForm = () => {
   const [projectDescription, setProjectDescription] = useState("");
   const [descriptorSuffix, setDescriptorSuffix] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
+  const [org, setOrg] = useState(null);
+  console.log("descriptorSuffix >", descriptorSuffix);
 
   useEffect(() => {
     const fetchCustomerInfo = async () => {
@@ -29,7 +31,10 @@ const PaymentForm = () => {
         setAmount(res?.data?.amount);
         setProjectDescription(res?.data?.description);
         setProjectTitle(res?.data?.projectTitle);
-        setDescriptorSuffix(res?.data?.descriptorSuffix);
+        setDescriptorSuffix(
+          res?.data?.salesPerson?.organization?.organizationSuffix || ""
+        );
+        setOrg(res?.data?.salesPerson?.organization);
       } catch (error) {
         console.log(error);
       }
@@ -105,16 +110,17 @@ const PaymentForm = () => {
       {/* <div className="w-full bg-gradient-to-r from-[#00C0FE] to-[#A6C820] h-[40vh] absolute top-0"></div> */}
 
       <div className="padding-x w-full z-20 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-x-20">
-        <div className="flex flex-col items-start justify-between gap-4">
-          <div className="flex flex-col items-start justify-center gap-6">
+        <div className="flex flex-col items-start justify-between gap-4 w-full">
+          <div className="flex flex-col items-start justify-center gap-6 w-full">
             <div className="flex justify-start">
               <img
-                src="/logo-1-ft.png"
+                // src="/logo-1-ft.png"
+                src={`http://localhost:2000/${org?.organizationLogo}`}
                 alt="logo"
-                className="bg-contain w-1/2"
+                className="bg-contain"
               />
             </div>
-            <div className="w-full flex items-center justify-between lg:mt-5">
+            <div className="flex items-center justify-between lg:mt-5 w-full">
               <p className="text-xl font-semibold">{projectTitle}</p>
               <p className="text-xl font-medium">${amount}.00</p>
             </div>
@@ -210,7 +216,8 @@ const PaymentForm = () => {
             <button
               type="submit"
               disabled={!stripe || isProcessing}
-              className="bg-orange text-white px-5 py-3 w-full text-sm font-medium mt-3.5"
+              className={`text-white px-5 py-3 w-full text-sm font-medium mt-3.5`}
+              style={{ background: org?.organizationColors?.color1 }}
             >
               {isProcessing ? "Processing..." : "Pay Now"}
             </button>
@@ -218,7 +225,7 @@ const PaymentForm = () => {
         </form>
       </div>
       <div className="w-full lg:hidden">
-        <SocialLinks />
+        <SocialLinks org={org} />
       </div>
     </div>
   );

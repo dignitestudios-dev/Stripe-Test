@@ -20,7 +20,7 @@ router.post("/create-admin", createAdmin);
 router.post("/login", loginAdmin);
 router.post("/verify-email", verifyEmail);
 router.post("/verify-otp", VerifyOtp);
-router.post("/change-password", ResetPassword);
+router.put("/change-password", ResetPassword);
 
 router.post("/create-employee", createEmployee);
 router.get("/get-employees", getAllEmployees);

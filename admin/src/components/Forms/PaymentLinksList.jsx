@@ -4,11 +4,15 @@ import { BASE_URL } from "../../api/api";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import ListSkeleton from "../Global/ListSkeleton";
 
 const PaymentLinksList = () => {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const fetchEmployees = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(`${BASE_URL}/customers/get-customers`, {
         headers: {
@@ -27,107 +31,124 @@ const PaymentLinksList = () => {
         Cookies.remove("digniteToken");
         navigate("/login");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
+    document.title = "Payment Links";
     fetchEmployees();
   }, []);
 
-  const handleDeleteEmployee = async (_id) => {
-    try {
-      const res = await axios.delete(
-        `${BASE_URL}/admin/delete-employee/${_id}`
-      );
-      console.log(res);
-      toast.success(res?.data?.message);
-    } catch (error) {
-      console.log(error);
-      toast.error("An error occurred while deleting user");
-    }
-  };
   return (
     <div className="bg-white p-6 rounded-xl min-h-screen">
       <h2 className="text-lg font-semibold">Payment Links</h2>
-      <div>
-        <table className="employee-table w-full mt-6">
-          <thead>
-            <tr className="bg-red-100">
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase pl-10">
-                Client Name
-              </th>
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase">
-                Client Email
-              </th>
+      {loading ? (
+        <ListSkeleton />
+      ) : (
+        <>
+          {employees.length > 0 ? (
+            <>
+              <div>
+                <table className="employee-table w-full mt-6">
+                  <thead>
+                    <tr className="bg-red-100">
+                      <th className="text-start text-xs red-text py-4 uppercase pl-10">
+                        Client Name
+                      </th>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Client Email
+                      </th>
 
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase">
-                Project Title
-              </th>
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase">
-                Amount
-              </th>
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase">
-                Created By
-              </th>
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase">
-                Date
-              </th>
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase">
-                Link
-              </th>
-              <th className="text-start text-[13px] text-red-500 py-4 uppercase">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees?.map((employee, index) => (
-              <tr
-                key={employee._id}
-                className={`border-b ${index % 2 == 1 && "bg-gray-100"}`}
-              >
-                <td className="text-[13px] font-medium py-4 pl-10">
-                  {employee?.name}
-                </td>
-                <td className="text-[13px] font-medium py-4">
-                  {employee?.email}
-                </td>
-                <td className="text-[13px] font-medium py-4">
-                  {employee?.projectTitle}
-                </td>
-                <td className="text-[13px] font-medium py-4">
-                  ${employee?.amount}
-                </td>
-                <td className="text-[13px] font-medium py-4">
-                  {employee?.salesPersonName}
-                </td>
-                <td className="text-[13px] font-medium py-4">
-                  {employee?.organization}
-                </td>
-                <td className="text-[13px] font-medium py-4">
-                  <a
-                    href={employee?.pageUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium text-sm underline"
-                  >
-                    Open Form
-                  </a>
-                  {employee?.organization}
-                </td>
-                <td className="text-[13px] font-medium py-4">
-                  <button
-                    type="button"
-                    className="bg-yellow-50 px-4 py-2 rounded-md text-xs font-semibold text-yellow-500"
-                  >
-                    Pending
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Project Title
+                      </th>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Amount
+                      </th>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Created By
+                      </th>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Organization
+                      </th>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Date
+                      </th>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Link
+                      </th>
+                      <th className="text-start text-xs red-text py-4 uppercase">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {employees?.map((employee, index) => (
+                      <tr
+                        key={employee._id}
+                        className={`border-b ${
+                          index % 2 == 1 && "bg-gray-100"
+                        }`}
+                      >
+                        <td className="text-xs font-medium py-4 pl-10">
+                          {employee?.name}
+                        </td>
+                        <td className="text-xs font-medium py-4">
+                          {employee?.email}
+                        </td>
+                        <td className="text-xs font-medium py-4">
+                          {employee?.projectTitle}
+                        </td>
+                        <td className="text-xs font-medium py-4">
+                          ${employee?.amount}
+                        </td>
+                        <td className="text-xs font-medium py-4">
+                          {employee?.salesPerson
+                            ? employee?.salesPerson?.name
+                            : "N/A"}
+                        </td>
+                        <td className="text-xs font-medium py-4">
+                          {employee?.salesPerson?.organization?.organizationName
+                            ? employee?.salesPerson?.organization
+                                ?.organizationName
+                            : "N/A"}
+                        </td>
+                        <td className="text-xs font-medium py-4">
+                          <a
+                            href={employee?.pageUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium text-sm underline"
+                          >
+                            Open Form
+                          </a>
+                          {employee?.organization}
+                        </td>
+                        <td className="text-xs font-medium py-4">
+                          <button
+                            type="button"
+                            className="text-xs font-semibold text-yellow-500"
+                          >
+                            Pending
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="w-full pt-36 text-center">
+                <h2>No payment links have been created yet.</h2>
+              </div>
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 };

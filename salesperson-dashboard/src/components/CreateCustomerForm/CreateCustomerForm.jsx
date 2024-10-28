@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import customerServices from "../../services/customerServices";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 const validate = (values) => {
   const errors = {};
@@ -10,27 +11,27 @@ const validate = (values) => {
     errors.name = "Required";
   }
 
-  if (!values.projectTitle) {
-    errors.projectTitle = "Required";
-  }
-
   if (!values.email) {
     errors.email = "Required";
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
     errors.email = "Invalid email address";
   }
 
+  if (!values.projectTitle) {
+    errors.projectTitle = "Required";
+  }
+
   if (!values.description) {
     errors.description = "Required";
   }
 
-  if (!values.salesPersonName) {
-    errors.salesPersonName = "Required";
-  }
+  // if (!values.salesPersonName) {
+  //   errors.salesPersonName = "Required";
+  // }
 
-  if (!values.salesPersonDepartment) {
-    errors.salesPersonDepartment = "Required";
-  }
+  // if (!values.salesPersonDepartment) {
+  //   errors.salesPersonDepartment = "Required";
+  // }
 
   if (!values.amount) {
     errors.amount = "Required";
@@ -50,19 +51,24 @@ const validate = (values) => {
 };
 
 const CreateCustomerForm = () => {
+  const loggedInUser = JSON.parse(Cookies.get("dgEmployee"));
+  if (loggedInUser) {
+    console.log(loggedInUser._id);
+  }
   const formik = useFormik({
     initialValues: {
       name: "",
       email: "",
+      projectTitle: "",
       description: "",
       amount: "",
-      salesPersonName: "",
-      salesPersonDepartment: "",
-      projectTitle: "",
-      descriptorSuffix: "ClickTap",
+      salesPerson: loggedInUser?._id || "",
+      // salesPersonDepartment: loggedInUser?.department || "",
+      // descriptorSuffix: loggedInUser?.organization?.organizationSuffix || "",
     },
     validate,
     onSubmit: async (values, { resetForm }) => {
+      console.log("values >>", values);
       const resolveAfter3Sec = new Promise(async (resolve, reject) => {
         try {
           const res = await customerServices.handleCreateCustomer(values);
@@ -85,12 +91,15 @@ const CreateCustomerForm = () => {
   });
 
   return (
-    <div className="padding-x flex justify-center items-center min-h-screen py-12 bg-gray-50">
+    <div className="padding-x flex justify-center items-center py-12 bg-gray-50">
       <form
         onSubmit={formik.handleSubmit}
         className="w-full md:w-1/2 lg:w-2/3 p-10 flex flex-col gap-5 bg-white"
       >
-        <h1 className="font-semibold text-2xl text-center">Create Link</h1>
+        <h1 className="font-semibold text-2xl text-center">
+          Create Payment Link
+        </h1>
+
         <h2 className="text-xl font-semibold mt-5">Client Info:</h2>
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="">
@@ -126,22 +135,7 @@ const CreateCustomerForm = () => {
             ) : null}
           </div>
         </div>
-        <div className="">
-          <label htmlFor="amount" className="text-sm font-medium">
-            Amount
-          </label>
-          <input
-            type="text"
-            name="amount"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.amount}
-            className="border  p-3 text-sm outline-none w-full"
-          />
-          {formik.errors.amount ? (
-            <div className="text-xs text-red-600">{formik.errors.amount}</div>
-          ) : null}
-        </div>
+
         <h2 className="text-xl font-semibold mt-5">Product Info:</h2>
         <div className="">
           <label htmlFor="projectTitle" className="text-sm font-medium">
@@ -181,6 +175,23 @@ const CreateCustomerForm = () => {
           ) : null}
         </div>
         <div className="">
+          <label htmlFor="amount" className="text-sm font-medium">
+            Amount
+          </label>
+          <input
+            type="text"
+            name="amount"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.amount}
+            className="border  p-3 text-sm outline-none w-full"
+          />
+          {formik.errors.amount ? (
+            <div className="text-xs text-red-600">{formik.errors.amount}</div>
+          ) : null}
+        </div>
+
+        {/* <div className="">
           <label htmlFor="descriptorSuffix" className="text-sm font-medium">
             Descriptor Suffix
           </label>
@@ -199,8 +210,8 @@ const CreateCustomerForm = () => {
               {formik.errors.descriptorSuffix}
             </div>
           ) : null}
-        </div>
-        <h2 className="text-xl font-semibold mt-5">Salesperson Info:</h2>
+        </div> */}
+        {/* <h2 className="text-xl font-semibold mt-5">Salesperson Info:</h2>
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="">
             <label htmlFor="salesPersonName" className="text-sm font-medium">
@@ -241,7 +252,7 @@ const CreateCustomerForm = () => {
               </div>
             ) : null}
           </div>
-        </div>
+        </div> */}
 
         <div className="">
           <button

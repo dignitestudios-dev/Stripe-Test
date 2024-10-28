@@ -1,6 +1,6 @@
 import React from "react";
 
-const SocialLinks = () => {
+const SocialLinks = ({ org }) => {
   return (
     <div className="w-full flex items-center justify-start gap-x-6 mt-7 px-5 lg:px-0">
       <p className="text-sm text-gray-600">
@@ -16,7 +16,7 @@ const SocialLinks = () => {
       <div className="h-8 border border-gray-300" />
       <a
         target="_blank"
-        href={`https://www.clicktapsolutions.com/assets/privacy.html`}
+        href={`https://${org?.organizationPrivacyPolicy}`}
         className="text-sm text-gray-600"
       >
         Privacy Policy
@@ -24,7 +24,7 @@ const SocialLinks = () => {
       <div className="h-8 border border-gray-300" />
       <a
         target="_blank"
-        href={`https://www.clicktapsolutions.com/assets/condition.html`}
+        href={`https://${org?.organizationTermsOfService}`}
         className="text-sm text-gray-600"
       >
         Terms & Conditions

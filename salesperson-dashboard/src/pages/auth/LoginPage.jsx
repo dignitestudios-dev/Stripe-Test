@@ -57,26 +57,25 @@ const LoginPage = () => {
         password,
       });
 
+      console.log("employee login res >>", response);
       if (response.status == 200) {
-        Cookies.set("dgEmployee", JSON.stringify(response.data));
+        Cookies.set("dgEmployee", JSON.stringify(response?.data?.data));
         toast.success(response?.data?.message);
-        Cookies.set("dgEmployeeToken", response.data.token);
+        Cookies.set("dgEmployeeToken", response?.data?.token);
+        navigate("/");
       }
 
-      console.log("employee login res >>", response);
-
-      // Cookies.set("digniteAdminEmail", data.data.adminEmail);
-      // Cookies.set("digniteAdminName", data.data.adminName);
-      // Cookies.set("digniteAdminId", data.data.id);
-      navigate("/");
+      if (response.status == 404) {
+        toast.error("Email does not exist");
+      }
     } catch (error) {
-      console.error("Login error:", error.message);
-      toast.error("Invalid email or password");
+      console.error("Login error:", error);
+      toast.error(error.response.data.message);
     }
   };
 
   useEffect(() => {
-    document.title = "TRTPEP Doctor Interface - Login";
+    document.title = "Login";
   }, []);
 
   return (
@@ -135,14 +134,14 @@ const LoginPage = () => {
                   <p className="text-xs text-red-600">{errors.password}</p>
                 )}
               </div>
-              <div className="text-sm text-end">
+              {/* <div className="text-sm text-end">
                 <Link
                   to="/verify-email"
                   className="text-[#9f9fa0] hover:underline"
                 >
                   Forgot your password?
                 </Link>
-              </div>
+              </div> */}
               <div className="mt-4">
                 <button
                   type="submit"

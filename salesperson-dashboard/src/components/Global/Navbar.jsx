@@ -17,7 +17,7 @@ const Navbar = () => {
           Form List
         </Link>
         <Link to={"/create-customer"} className="text-sm font-medium">
-          Create Customer
+          Create Link
         </Link>
         <button
           type="button"

@@ -17,6 +17,7 @@ const VerifyOtpForm = () => {
   const [state, setState] = useState(false);
 
   useEffect(() => {
+    document.title = "Verify OTP";
     if (!isTimerActive) return;
 
     if (timeLeft <= 0) {
@@ -75,7 +76,7 @@ const VerifyOtpForm = () => {
                 <p className="text-sm mt-4">
                   Input the OTP code we've provided at your registered email.
                 </p>
-                <p className="text-sm mt-4 text-red-600">{message}</p>
+                <p className="text-sm mt-4 red-text">{message}</p>
               </div>
               <div>
                 <label className="text-sm mb-2 block">OTP Code</label>
@@ -96,7 +97,7 @@ const VerifyOtpForm = () => {
               <div className="!mt-4">
                 <button
                   type="submit"
-                  className="w-full shadow-xl py-3.5 px-4 text-sm font-semibold rounded-md text-white bg-red-500 hover:opacity-85 focus:outline-none"
+                  className="w-full shadow-xl py-3.5 px-4 text-sm font-semibold rounded-md text-white red-bg hover:opacity-85 focus:outline-none"
                 >
                   Verify OTP
                 </button>

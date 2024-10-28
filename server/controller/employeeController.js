@@ -46,21 +46,29 @@ module.exports.createEmployee = async (req, res, next) => {
 module.exports.loginEmployee = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const admin = await Employees.findOne({ email });
+    const employee = await Employees.findOne({ email }).populate({
+      path: "organization",
+      model: "Organizations",
+      select: "organizationName organizationDomain organizationSuffix",
+      strictPopulate: false,
+    });
+    if (!employee) {
+      return res.status(404).json({ message: "Email does not exist" });
+    }
 
-    if (!admin || !(await bcrypt.compare(password, admin.password))) {
+    if (!employee || !(await bcrypt.compare(password, employee.password))) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
-      { id: admin._id, role: "admin" },
+      { id: employee._id, role: "employee" },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     res.json({
       message: "Login successfull",
-      data: { id: admin._id, name: admin.name, email: admin.email },
+      data: employee,
       token,
     });
   } catch (error) {
@@ -71,13 +79,21 @@ module.exports.loginEmployee = async (req, res) => {
 
 module.exports.getAllEmployees = async (req, res) => {
   try {
-    const employees = await Employees.find();
+    const employees = await Employees.find().populate({
+      path: "organization",
+      model: "Organizations",
+      select: "organizationName organizationDomain organizationSuffix",
+      strictPopulate: false,
+    });
+
     if (employees.length > 0) {
       return res.status(200).json({ message: "success", data: employees });
     }
-    res.status(404).json({ message: "You do no have added any employee." });
+
+    res.status(404).json({ message: "You do not have added any employee." });
   } catch (error) {
-    console.log(error);
+    console.log("Error fetching employees:", error);
+    res.status(500).json({ message: "Server error while fetching employees." });
   }
 };
 
@@ -85,7 +101,12 @@ module.exports.getEmployeeById = async (req, res) => {
   const { _id } = req.params;
 
   try {
-    const employee = await Employees.findById(_id);
+    const employee = await Employees.findById(_id).populate({
+      path: "organization",
+      model: "Organizations",
+      select: "organizationName",
+      strictPopulate: false,
+    });
 
     if (employee) {
       return res

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import customerServices from "../../services/customerServices";
+import Cookies from "js-cookie";
 
 const CustomersList = () => {
   const [customers, setCustomers] = useState([]);
+  const myInfo = JSON.parse(Cookies.get("dgEmployee"));
+  console.log(myInfo);
 
   const fetchCustomers = async () => {
     try {
-      const resp = await customerServices.handleFetchCustomers();
-      console.log("res >> ", resp.data);
+      const resp = await customerServices.handleFetchCustomers(myInfo?._id);
+      // console.log("res >> ", resp.data);
       setCustomers(resp.data);
     } catch (error) {
       console.log("err >> ", error);
@@ -39,76 +42,81 @@ const CustomersList = () => {
       <h1 className="font-semibold text-base mb-6">Customers List</h1>
 
       <div className="relative overflow-x-auto">
-        <table className="w-full text-sm text-left rtl:text-right">
-          <thead className="text-xs uppercase bg-red-50">
-            <tr>
-              <th scope="col" className="px-6 py-4 text-xs">
-                Client Name
-              </th>
-              <th scope="col" className="px-6 py-4 text-xs">
-                Client Email
-              </th>
-              <th scope="col" className="px-6 py-4 text-xs">
-                Project Title
-              </th>
-              <th scope="col" className="px-6 py-4 text-xs">
-                Amount
-              </th>
-              <th scope="col" className="px-6 py-4 text-xs">
-                Salesperson Name
-              </th>
-
-              <th scope="col" className="px-6 py-4 text-xs">
-                Payment Form URL
-              </th>
-              <th scope="col" className="px-6 py-4 text-xs">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-4 text-xs">
-                Delete url
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {customers.map((c, index) => {
-              return (
-                <tr className="bg-white border-b" key={index}>
-                  <th scope="row" className="px-6 py-4 text-xs font-normal">
-                    {c?.name}
+        {customers.length > 0 ? (
+          <>
+            <table className="w-full text-sm text-left rtl:text-right">
+              <thead className="text-xs uppercase bg-red-50">
+                <tr>
+                  <th scope="col" className="px-6 py-4 text-xs">
+                    Client Name
                   </th>
-                  <td className="px-6 py-4 text-xs">{c?.email}</td>
-                  <td className="px-6 py-4 text-xs">{c?.projectTitle}</td>
-                  <td className="px-6 py-4 text-xs">${c?.amount}</td>
-                  <td className="px-6 py-4 text-xs">
-                    {c?.salesPersonName ? c?.salesPersonName : "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-xs">
-                    <a target="_blank" href={c?.pageUrl} className="underline">
-                      Open Form
-                    </a>
-                  </td>
-                  <td className="px-6 py-4 text-xs">
-                    <button
-                      disabled="disabled"
-                      className="bg-yellow-100 text-yellow-500 font-medium text-xs px-4 py-2 rounded-lg"
-                    >
-                      Pending
-                    </button>
-                  </td>
-                  <td className="px-6 py-4 text-xs">
-                    <button
-                      onClick={() => handleDeletePaymentFormUrl(c?.priceId)}
-                      className="font-medium text-red-500 underline"
-                      type="button"
-                    >
-                      Delete
-                    </button>
-                  </td>
+                  <th scope="col" className="px-6 py-4 text-xs">
+                    Client Email
+                  </th>
+                  <th scope="col" className="px-6 py-4 text-xs">
+                    Project Title
+                  </th>
+                  <th scope="col" className="px-6 py-4 text-xs">
+                    Amount
+                  </th>
+                  <th scope="col" className="px-6 py-4 text-xs">
+                    Payment Form URL
+                  </th>
+                  <th scope="col" className="px-6 py-4 text-xs">
+                    Status
+                  </th>
+                  <th scope="col" className="px-6 py-4 text-xs">
+                    Action
+                  </th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {customers?.map((c, index) => {
+                  return (
+                    <tr className="bg-white border-b" key={index}>
+                      <th scope="row" className="px-6 py-4 text-xs font-normal">
+                        {c?.name}
+                      </th>
+                      <td className="px-6 py-4 text-xs">{c?.email}</td>
+                      <td className="px-6 py-4 text-xs">{c?.projectTitle}</td>
+                      <td className="px-6 py-4 text-xs">${c?.amount}</td>
+                      <td className="px-6 py-4 text-xs">
+                        <a
+                          target="_blank"
+                          href={c?.pageUrl}
+                          className="underline"
+                        >
+                          Open Form
+                        </a>
+                      </td>
+                      <td className="px-6 py-4 text-xs">
+                        <button
+                          disabled="disabled"
+                          className="text-yellow-500 font-medium text-xs"
+                        >
+                          Pending
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 text-xs lg:pl-7">
+                        <button
+                          onClick={() => handleDeletePaymentFormUrl(c?.priceId)}
+                          className="font-medium text-red-500 underline"
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <div className="w-full text-center pt-20">
+            <h2>You have created any payment link.</h2>
+          </div>
+        )}
       </div>
     </div>
   );

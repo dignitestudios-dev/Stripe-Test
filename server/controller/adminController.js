@@ -46,12 +46,13 @@ module.exports.loginAdmin = async (req, res) => {
 // verify email
 module.exports.verifyEmail = async (req, res) => {
   const { email } = req.body;
-  console.log(email);
+  // console.log(email);
 
   try {
     const userExist = await Admin.findOne({ email });
+    console.log(userExist);
 
-    if (!userExist) {
+    if (!userExist || userExist == null) {
       return res
         .status(404)
         .json({ status: 404, message: "Email does not exist." });
@@ -144,28 +145,36 @@ module.exports.VerifyOtp = async (req, res) => {
   }
 };
 
-// reset password
 module.exports.ResetPassword = async (req, res) => {
   const { email, password } = req.body;
+  console.log("Received email and password:", email, password);
+
   try {
     const isUser = await Admin.findOne({ email });
-    if (isUser == null) {
-      return res.status(404).send({ message: "Email does not exists" });
+
+    if (!isUser) {
+      return res.status(404).send({ message: "Email does not exist" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("Hashed password generated");
 
-    await UserModel.findOneAndUpdate(
-      { email: email },
+    const result = await Admin.findOneAndUpdate(
+      { email },
       { password: hashedPassword }
     );
+
+    if (!result) {
+      throw new Error("Failed to update password");
+    }
 
     return res
       .status(200)
       .json({ message: "Password changed successfully", status: 200 });
   } catch (error) {
+    console.log("Error in ResetPassword:", error);
     return res
       .status(500)
-      .json({ message: "Server error", error, status: 500 });
+      .json({ message: "Server error", error: error.message, status: 500 });
   }
 };

@@ -19,3 +19,11 @@
 .padding-y {
   @apply py-12 lg:py-20;
 }
+
+.red-bg {
+  @apply bg-[#B2162D];
+}
+
+.red-text {
+  @apply text-[#B2162D];
+}

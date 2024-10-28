@@ -44,9 +44,11 @@ const handleCreateCustomer = async (data) => {
   }
 };
 
-const handleFetchCustomers = async () => {
+const handleFetchCustomers = async (_id) => {
   try {
-    const response = await axios.get(`${BASE_URL}/customers/get-customers`);
+    const response = await axios.get(
+      `${BASE_URL}/customers/get-customers/${_id}`
+    );
     return await handleResponse(response);
   } catch (error) {
     throw new Error(

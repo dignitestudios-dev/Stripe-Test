@@ -8,10 +8,12 @@ const CustomerSchema = new mongoose.Schema(
     amount: { type: String, required: true },
     pageUrl: { type: String, required: false, default: "" },
     priceId: { type: String },
-    salesPersonName: { type: String, required: true },
-    salesPersonDepartment: { type: String, required: true },
+    salesPerson: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employees",
+      required: true,
+    },
     projectTitle: { type: String },
-    descriptorSuffix: { type: String },
   },
   { collection: "Customers" }
 );

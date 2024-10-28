@@ -6,13 +6,32 @@ module.exports.CreateCustomer = async (req, res) => {
   const {
     name,
     email,
+    salesPerson,
+    projectTitle,
     description,
     amount,
-    salesPersonName,
-    salesPersonDepartment,
-    projectTitle,
-    descriptorSuffix,
+    // salesPersonDepartment,
+    // descriptorSuffix,
   } = req.body;
+  // console.log(req.body);
+  if (!name) {
+    return res.status(400).json({ message: "Client name is required" });
+  }
+  if (!email) {
+    return res.status(400).json({ message: "Client email is required" });
+  }
+  if (!salesPerson) {
+    return res.status(400).json({ message: "User id is required" });
+  }
+  if (!projectTitle) {
+    return res.status(400).json({ message: "Project title is required" });
+  }
+  if (!description) {
+    return res.status(400).json({ message: "Product description is required" });
+  }
+  if (!amount) {
+    return res.status(400).json({ message: "Amount is required" });
+  }
 
   const numericAmount = parseFloat(amount);
   const unitAmount = numericAmount * 100;
@@ -62,14 +81,14 @@ module.exports.CreateCustomer = async (req, res) => {
     const customer = await Customers.create({
       name,
       email,
-      description,
       amount,
-      salesPersonName,
-      salesPersonDepartment,
+      salesPerson,
+      projectTitle,
+      description,
       productId: product.id,
       priceId: price.id,
-      projectTitle,
-      descriptorSuffix,
+      // salesPersonDepartment,
+      // descriptorSuffix,
     });
 
     // Step 5: Generate a payment form URL
@@ -149,7 +168,36 @@ module.exports.CreatePaymentIntent = async (req, res) => {
 
 module.exports.GetCustomers = async (req, res) => {
   try {
-    const customers = await Customers.find();
+    const customers = await Customers.find().populate({
+      path: "salesPerson",
+      model: "Employees",
+      select: "name organization",
+      populate: {
+        path: "organization",
+        model: "Organizations",
+        select: "organizationName organizationDomain organizationSuffix",
+      },
+    });
+    res.status(200).json({ data: customers });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+module.exports.GetCustomerById = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    console.log(_id);
+    const customers = await Customers.find({ salesPerson: _id }).populate({
+      path: "salesPerson",
+      model: "Employees",
+      select: "name organization",
+      populate: {
+        path: "organization",
+        model: "Organizations",
+        select: "organizationName organizationDomain organizationSuffix",
+      },
+    });
     res.status(200).json({ data: customers });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -164,7 +212,17 @@ module.exports.GetCustomerInfo = async (req, res) => {
       return res.status(400).json({ message: "Price ID not found" });
     }
 
-    const customer = await Customers.findOne({ priceId });
+    const customer = await Customers.findOne({ priceId }).populate({
+      path: "salesPerson",
+      model: "Employees",
+      select: "name organization",
+      populate: {
+        path: "organization",
+        model: "Organizations",
+        select:
+          "organizationName organizationDomain organizationSuffix organizationLogo organizationColors organizationPrivacyPolicy organizationTermsOfService",
+      },
+    });
     if (!customer) {
       return res.status(404).json({ message: "Customer not found" });
     }

@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-const ORGANIZATIONS = ["LB", "DS", "CTS"];
 const DEPARTMENTS = ["HR", "Sales", "Production"];
 
 const employeeSchema = new mongoose.Schema(
@@ -14,9 +13,9 @@ const employeeSchema = new mongoose.Schema(
       enum: DEPARTMENTS,
     },
     organization: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organizations",
       required: true,
-      enum: ORGANIZATIONS,
     },
     jobPosition: { type: String, required: true },
   },

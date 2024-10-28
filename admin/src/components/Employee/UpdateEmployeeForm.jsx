@@ -44,28 +44,40 @@ const UpdateEmployeeForm = () => {
   const navigate = useNavigate();
   const { _id } = useParams();
   const [data, setData] = useState(null);
+  const [organizations, setOrganizations] = useState([]);
 
   const fetchUserById = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/admin/employees/${_id}`);
       setData(response.data.data);
+      console.log(response.data.data);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const fetchOrgs = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/admin/get-organizations`);
+      setOrganizations(res?.data?.data);
+    } catch (error) {
+      console.log("orgs err >>", error);
+    }
+  };
+
   useEffect(() => {
+    document.title = "Update Employee";
     fetchUserById();
+    fetchOrgs();
   }, []);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       name: data?.name || "",
-      //   password: data?.password || "",
       email: data?.email || "",
       department: data?.department || "",
-      organization: data?.organization || "",
+      organization: data?.organization?._id || "",
       jobPosition: data?.jobPosition || "",
     },
     validate,
@@ -127,7 +139,7 @@ const UpdateEmployeeForm = () => {
               Employee Name
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="appearance-none block w-full bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="name"
               type="text"
               name="name"
@@ -135,7 +147,7 @@ const UpdateEmployeeForm = () => {
               value={formik.values.name}
             />
             {formik.errors.name && (
-              <div className="text-red-500 text-xs italic">
+              <div className="red-text text-xs italic">
                 {formik.errors.name}
               </div>
             )}
@@ -148,7 +160,7 @@ const UpdateEmployeeForm = () => {
               Employee Email
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="appearance-none block w-full bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="email"
               type="email"
               name="email"
@@ -156,7 +168,7 @@ const UpdateEmployeeForm = () => {
               value={formik.values.email}
             />
             {formik.errors.email && (
-              <div className="text-red-500 text-xs italic">
+              <div className="red-text text-xs italic">
                 {formik.errors.email}
               </div>
             )}
@@ -171,7 +183,7 @@ const UpdateEmployeeForm = () => {
               Password
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="appearance-none block w-full bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="password"
               type="password"
               name="password"
@@ -179,7 +191,7 @@ const UpdateEmployeeForm = () => {
               value={formik.values.password}
             />
             {formik.errors.password && (
-              <div className="text-red-500 text-xs italic">
+              <div className="red-text text-xs italic">
                 {formik.errors.password}
               </div>
             )}
@@ -194,7 +206,7 @@ const UpdateEmployeeForm = () => {
               Job Position
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="appearance-none block w-full bg-gray-100 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="jobPosition"
               type="text"
               name="jobPosition"
@@ -202,7 +214,7 @@ const UpdateEmployeeForm = () => {
               value={formik.values.jobPosition}
             />
             {formik.errors.jobPosition && (
-              <div className="text-red-500 text-xs italic">
+              <div className="red-text text-xs italic">
                 {formik.errors.jobPosition}
               </div>
             )}
@@ -217,7 +229,7 @@ const UpdateEmployeeForm = () => {
               Department
             </label>
             <select
-              className="block appearance-none w-full bg-gray-200 border rounded py-3 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="block appearance-none w-full bg-gray-100 border rounded py-3 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="department"
               name="department"
               onChange={formik.handleChange}
@@ -229,7 +241,7 @@ const UpdateEmployeeForm = () => {
               <option value="Sales">Sales</option>
             </select>
             {formik.errors.department && (
-              <div className="text-red-500 text-xs italic">
+              <div className="red-text text-xs italic">
                 {formik.errors.department}
               </div>
             )}
@@ -242,19 +254,21 @@ const UpdateEmployeeForm = () => {
               Organization
             </label>
             <select
-              className="block appearance-none w-full bg-gray-200 border rounded py-3 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="block appearance-none w-full bg-gray-100 border rounded py-3 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
               id="organization"
               name="organization"
               onChange={formik.handleChange}
               value={formik.values.organization}
             >
               <option value="">Select Organization</option>
-              <option value="DS">DS</option>
-              <option value="CTS">CTS</option>
-              <option value="LB">LB</option>
+              {organizations.map((org) => (
+                <option key={org._id} value={org._id}>
+                  {org.organizationName}
+                </option>
+              ))}
             </select>
             {formik.errors.organization && (
-              <div className="text-red-500 text-xs italic">
+              <div className="red-text text-xs italic">
                 {formik.errors.organization}
               </div>
             )}
@@ -263,13 +277,13 @@ const UpdateEmployeeForm = () => {
         <div className="mt-8 flex items-center justify-start gap-3">
           <button
             type="submit"
-            className="bg-red-500 px-10 py-2.5 rounded text-center text-white font-medium"
+            className="red-bg px-10 py-2.5 text-sm rounded text-center text-white font-medium"
           >
             Update
           </button>
           <button
             type="button"
-            className="bg-gray-400 px-10 py-2.5 rounded text-center text-white font-medium"
+            className="bg-gray-400 px-10 text-sm py-2.5 rounded text-center text-white font-medium"
             onClick={() => navigate(-1)}
           >
             Cancel

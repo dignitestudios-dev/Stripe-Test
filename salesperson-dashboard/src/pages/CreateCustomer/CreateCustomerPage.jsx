@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import CreateCustomerForm from "../../components/CreateCustomerForm/CreateCustomerForm";
+import Cookies from "js-cookie";
 
 const CreateCustomerPage = () => {
   useEffect(() => {
-    document.title = "Cretae Payment Link";
+    document.title = "Create Payment Link";
   }, []);
   return (
     <div>

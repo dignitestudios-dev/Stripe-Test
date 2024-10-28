@@ -13,33 +13,36 @@ const UpdatePasswordForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // navigate("/login");
     const email = Cookies.get("verifyEmail");
+    console.log("email >>", email);
     try {
       const res = await fetch(`${BASE_URL}/admin/change-password`, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log("verify email res >>", res);
-      Cookies.set("verifyEmail", email);
-      toast.success("Password changed succesfully");
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to update password");
+      }
+
+      // handle success
+      toast.success("Password changed successfully");
       navigate("/login");
-      // handleNavigate();
     } catch (error) {
       console.log("verifyEmail error >> ", error.message);
-      setMessage(error.message);
+      // setMessage(error.message);
       toast.error(error.message);
     }
   };
 
   useEffect(() => {
-    document.title = "BCT - Reset Password";
+    document.title = "Change Password";
   }, []);
 
   return (
@@ -71,9 +74,7 @@ const UpdatePasswordForm = () => {
                     )}
                   </button>
                 </div>
-                {password !== "" && (
-                  <p className="text-sm text-red-600">{error}</p>
-                )}
+                {password !== "" && <p className="text-sm red-text">{error}</p>}
               </div>
               <div>
                 <label className="text-sm mb-2 block">Confirm Password</label>
@@ -97,15 +98,13 @@ const UpdatePasswordForm = () => {
                     )}
                   </button>
                 </div>
-                {password !== "" && (
-                  <p className="text-sm text-red-600">{error}</p>
-                )}
+                {password !== "" && <p className="text-sm red-text">{error}</p>}
               </div>
 
               <div className="mt-4">
                 <button
                   type="submit"
-                  className="w-full shadow-xl py-3.5 px-4 text-sm font-semibold rounded-md text-white bg-red-500 hover:opacity-85 focus:outline-none"
+                  className="w-full shadow-xl py-3.5 px-4 text-sm font-semibold rounded-md text-white red-bg hover:opacity-85 focus:outline-none"
                 >
                   Update Password
                 </button>

@@ -12,7 +12,7 @@
 }
 
 .StripeElement {
-  @apply border p-3 text-base;
+  @apply border p-3.5 text-base;
 }
 
 .padding-x {

@@ -10,10 +10,6 @@ const VerifyEmailForm = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleNavigate = () => {
-    navigate("/verify-otp");
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -25,9 +21,13 @@ const VerifyEmailForm = () => {
         body: JSON.stringify({ email }),
       });
       console.log("verify email res >>", res);
-      Cookies.set("verifyEmail", email);
-      toast.success("OTP sent you email address");
-      handleNavigate();
+      if (res.status == 200) {
+        // Cookies.set("verifyEmail", email);
+        toast.success("OTP sent you email address");
+        navigate("/verify-otp");
+      } else if (res.status == 404) {
+        toast.error("Email does not exist");
+      }
     } catch (error) {
       console.log("verifyEmail error >> ", error.message);
       setMessage(error.message);
@@ -36,7 +36,7 @@ const VerifyEmailForm = () => {
   };
 
   useEffect(() => {
-    document.title = "BCT - Verify Email";
+    document.title = "Verify Email";
   }, []);
 
   return (
@@ -50,7 +50,6 @@ const VerifyEmailForm = () => {
                 <p className="text-sm mt-4">
                   We'll send an otp to the provided email address.
                 </p>
-                {/* <p className="text-sm mt-4 text-red-600">{message}</p> */}
               </div>
               <div>
                 <label className="text-sm mb-2 block">Email</label>
@@ -89,7 +88,7 @@ const VerifyEmailForm = () => {
                 <button
                   type="submit"
                   onClick={handleSubmit}
-                  className="w-full shadow-xl py-3.5 px-4 text-sm font-semibold rounded-md text-white bg-red-500 hover:opacity-85 focus:outline-none"
+                  className="w-full shadow-xl py-3.5 px-4 text-sm font-semibold rounded-md text-white red-bg hover:opacity-85 focus:outline-none"
                 >
                   Send OTP
                 </button>
