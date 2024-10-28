@@ -66,6 +66,13 @@ const LoginForm = () => {
   return (
     <div className="max-h-screen w-full flex items-center justify-center overflow-hidden">
       <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full min-h-screen">
+        <div className="bg-gray-200 h-full hidden md:block">
+          <img
+            src="/Mobile login-cuate.svg"
+            alt="login-screen-mockup"
+            className="w-full h-full object-contain"
+          />
+        </div>
         <div className="p-6 lg:p-10 shadow-lg w-full flex justify-center items-center h-full">
           <form
             onSubmit={handleSubmit}
@@ -133,14 +140,6 @@ const LoginForm = () => {
               </button>
             </div>
           </form>
-        </div>
-
-        <div className="bg-gray-200 h-full hidden md:block">
-          <img
-            src="/login-mockup.png"
-            alt="login-screen-mockup"
-            className="w-full h-full object-contain"
-          />
         </div>
       </div>
     </div>

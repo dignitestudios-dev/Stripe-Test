@@ -1,6 +1,7 @@
 import React from "react";
 
 const SocialLinks = ({ org }) => {
+  console.log("org from social Link >>", org);
   return (
     <div className="w-full flex items-center justify-start gap-x-6 mt-7 px-5 lg:px-0">
       <p className="text-sm text-gray-600">

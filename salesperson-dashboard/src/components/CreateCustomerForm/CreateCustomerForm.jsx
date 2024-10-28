@@ -35,8 +35,10 @@ const validate = (values) => {
 
   if (!values.amount) {
     errors.amount = "Required";
-  } else if (values.amount <= 0) {
+  } else if (values.amount == 0) {
     errors.amount = "Amount can not be 0";
+  } else if (values.amount < 0) {
+    errors.amount = "Amount can not be less than 0";
   }
 
   // if (!values.descriptorSuffix) {

@@ -19,9 +19,9 @@ const PaymentForm = () => {
   const [descriptorSuffix, setDescriptorSuffix] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
   const [org, setOrg] = useState(null);
-  console.log("descriptorSuffix >", descriptorSuffix);
 
   useEffect(() => {
+    document.title = "Pyament Link";
     const fetchCustomerInfo = async () => {
       try {
         const res = await paymentServices.handleFetchCustomerByPriceId(priceId);

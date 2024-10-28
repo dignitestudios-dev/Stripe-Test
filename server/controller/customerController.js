@@ -1,19 +1,11 @@
 const mongoose = require("mongoose");
 const Customers = mongoose.model("Customers");
+const Employees = mongoose.model("Employees");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 module.exports.CreateCustomer = async (req, res) => {
-  const {
-    name,
-    email,
-    salesPerson,
-    projectTitle,
-    description,
-    amount,
-    // salesPersonDepartment,
-    // descriptorSuffix,
-  } = req.body;
-  // console.log(req.body);
+  const { name, email, salesPerson, projectTitle, description, amount } =
+    req.body;
   if (!name) {
     return res.status(400).json({ message: "Client name is required" });
   }
@@ -32,6 +24,16 @@ module.exports.CreateCustomer = async (req, res) => {
   if (!amount) {
     return res.status(400).json({ message: "Amount is required" });
   }
+  console.log(req.body);
+  const host = req.headers.host;
+  console.log("host >", host);
+
+  const sales_person = await Employees.findById(salesPerson).populate({
+    path: "organization",
+    model: "Organizations",
+    select: "organizationName organizationDomain organizationSuffix",
+  });
+  // console.log("sales_person >>", sales_person);
 
   const numericAmount = parseFloat(amount);
   const unitAmount = numericAmount * 100;
@@ -58,11 +60,6 @@ module.exports.CreateCustomer = async (req, res) => {
     const product = await stripe.products.create({
       name: projectTitle || description,
       description: `Product ordered by ${name}`,
-      // metadata: {
-      //   salesPersonName,
-      //   salesPersonDepartment,
-      //   customerEmail: email,
-      // },
     });
 
     // Step 3: Create a price for the product
@@ -71,10 +68,6 @@ module.exports.CreateCustomer = async (req, res) => {
       unit_amount: unitAmount,
       currency: "usd",
       nickname: description,
-      // metadata: {
-      //   title: projectTitle || "Demo Title",
-      //   description,
-      // },
     });
 
     // Step 4: Store the customer in your local database
@@ -87,12 +80,11 @@ module.exports.CreateCustomer = async (req, res) => {
       description,
       productId: product.id,
       priceId: price.id,
-      // salesPersonDepartment,
-      // descriptorSuffix,
     });
 
     // Step 5: Generate a payment form URL
-    const pageUrl = `https://stripe-test-pdm7.vercel.app/${price.id}`;
+    // https://stripe-test-pdm7.vercel.app
+    const pageUrl = `https://${sales_person?.organization?.organizationDomain}/stripe-test-pdm7.vercel.app/${price.id}`;
     customer.pageUrl = pageUrl;
     await customer.save();
 

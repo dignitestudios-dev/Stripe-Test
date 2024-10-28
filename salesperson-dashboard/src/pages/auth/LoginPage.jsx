@@ -12,7 +12,6 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
 
-  // Helper function to validate email
   const validateEmail = (email) => {
     if (!email) return "Enter your email.";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,14 +19,11 @@ const LoginPage = () => {
     return "";
   };
 
-  // Helper function to validate password
   const validatePassword = (password) => {
     if (!password) return "Enter your password.";
-    if (password.length < 6) return "Password must be at least 6 characters.";
     return "";
   };
 
-  // Form validation
   const validateForm = () => {
     const { email, password } = formData;
     const newErrors = {
@@ -38,14 +34,12 @@ const LoginPage = () => {
     return !newErrors.email && !newErrors.password;
   };
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Reset error on input change
+    setErrors({ ...errors, [name]: "" });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -79,7 +73,7 @@ const LoginPage = () => {
   }, []);
 
   return (
-    <div className="font-[sans-serif] text-[#333]">
+    <div className="text-[#333]">
       <div className="max-h-screen flex items-center justify-center overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full min-h-screen">
           <div className="p-6 lg:p-10 shadow-lg w-full flex justify-center items-center h-full">
@@ -134,14 +128,6 @@ const LoginPage = () => {
                   <p className="text-xs text-red-600">{errors.password}</p>
                 )}
               </div>
-              {/* <div className="text-sm text-end">
-                <Link
-                  to="/verify-email"
-                  className="text-[#9f9fa0] hover:underline"
-                >
-                  Forgot your password?
-                </Link>
-              </div> */}
               <div className="mt-4">
                 <button
                   type="submit"

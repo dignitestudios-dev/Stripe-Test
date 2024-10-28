@@ -123,7 +123,7 @@ const UpdateOrganizationForm = () => {
         if (res.status === 200) {
           toast.success("Organization updated successfully!");
           // resetForm();
-          // navigate("/organizations");
+          navigate("/organizations");
         }
       } catch (error) {
         console.error("Error updating organization:", error);
