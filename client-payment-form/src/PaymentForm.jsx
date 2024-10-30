@@ -22,11 +22,11 @@ const PaymentForm = () => {
   const [org, setOrg] = useState(null);
 
   useEffect(() => {
-    if (org) {
-      document.title = org?.organizationName;
-    } else {
-      document.title = "Authorized Billing";
-    }
+    // if (org) {
+    //   document.title = org?.organizationName;
+    // } else {
+    //   document.title = "Authorized Billing";
+    // }
     const fetchCustomerInfo = async () => {
       try {
         const res = await paymentServices.handleFetchCustomerByPriceId(priceId);
