@@ -11,6 +11,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const path = require("path");
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+var corsOptions = {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "ngrok-skip-browser-warning"],
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 const { DBConnection } = require("./db/connection");
 
