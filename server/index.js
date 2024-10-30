@@ -33,12 +33,6 @@ app.get("/", (req, res, next) =>
   res.status(200).json({ message: "Welcome to me app" })
 );
 
-app.use((req, res, next) => {
-  console.log("Request Received..");
-  console.log(req);
-  next();
-});
-
 // admin routes
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/customers", require("./routes/customerRoutes"));
