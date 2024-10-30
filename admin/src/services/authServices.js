@@ -15,13 +15,20 @@ const register = async (username, email, password) => {
 
 // Login user
 const login = async (email, password) => {
-  const response = await axios.post(BASE_URL + "/admin/login", {
-    email,
-    password,
-  });
+  const response = await axios.post(
+    BASE_URL + "/admin/login",
+    {
+      email,
+      password,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (response.token) {
-    // Save the token in localStorage
     localStorage.setItem("digniteToken", JSON.stringify(response.data));
   }
 
