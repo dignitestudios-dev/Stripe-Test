@@ -128,7 +128,7 @@ const CustomersList = () => {
           </>
         ) : (
           <div className="w-full text-center pt-20">
-            <h2>You have created any payment link.</h2>
+            <h2>You have not created any payment link.</h2>
           </div>
         )}
       </div>
