@@ -11,8 +11,11 @@ const {
 const router = express.Router();
 
 router.post("/create-customer", CreateCustomer);
+
 router.get("/get-customers", GetCustomers);
+
 router.get("/get-customers/:_id", GetCustomerById);
+
 router.post("/payment/create-payment-intent", CreatePaymentIntent);
 
 router.get("/get-customer/:priceId", GetCustomerInfo);
