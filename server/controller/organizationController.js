@@ -13,7 +13,16 @@ module.exports.addOrganization = async (req, res) => {
       organizationColor2,
       organizationPrivacyPolicy,
       organizationTermsOfService,
+      organizationPhoneNumber,
+      organizationSupportEmail,
+      organizationAddress,
     } = req.body;
+    console.log(req.body);
+
+    const alreadyExist = await Organizations.findOne({ organizationName });
+    if (alreadyExist) {
+      return res.status(400).json({ message: "Organization is already added" });
+    }
 
     const organizationLogo = req.file
       ? `uploads/${req.file.filename.replace(/\\/g, "/")}`
@@ -30,6 +39,9 @@ module.exports.addOrganization = async (req, res) => {
       organizationLogo,
       organizationPrivacyPolicy,
       organizationTermsOfService,
+      organizationPhoneNumber,
+      organizationSupportEmail,
+      organizationAddress,
     });
 
     await newOrganization.save();
@@ -103,10 +115,17 @@ module.exports.updateOrganization = async (req, res) => {
       organizationName: req.body.organizationName,
       organizationDomain: req.body.organizationDomain,
       organizationSuffix: req.body.organizationSuffix,
-      organizationColor1: req.body.organizationColor1,
-      organizationColor2: req.body.organizationColor2,
+      // organizationColor1: req.body.organizationColor1,
+      // organizationColor2: req.body.organizationColor2,
       organizationPrivacyPolicy: req.body.organizationPrivacyPolicy,
       organizationTermsOfService: req.body.organizationTermsOfService,
+      organizationSupportEmail: req.body.organizationSupportEmail,
+      organizationPhoneNumber: req.body.organizationPhoneNumber,
+      organizationAddress: req.body.organizationAddress,
+      organizationColors: {
+        color1: req.body.organizationColors.color1,
+        color2: req.body.organizationColors.color2,
+      },
     };
 
     const organization = await Organizations.findById(_id);

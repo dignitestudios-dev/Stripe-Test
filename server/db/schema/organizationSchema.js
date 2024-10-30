@@ -12,6 +12,9 @@ const OrganizationSchema = new mongoose.Schema(
     organizationLogo: { type: String },
     organizationPrivacyPolicy: { type: String },
     organizationTermsOfService: { type: String },
+    organizationPhoneNumber: { type: String, required: true },
+    organizationSupportEmail: { type: String, required: true },
+    organizationAddress: { type: String, required: true },
   },
   {
     timestamps: true,

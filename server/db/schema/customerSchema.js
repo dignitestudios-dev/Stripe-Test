@@ -14,6 +14,7 @@ const CustomerSchema = new mongoose.Schema(
       required: true,
     },
     projectTitle: { type: String },
+    paymentStatus: { type: String, default: "Pending", required: false },
   },
   { collection: "Customers" }
 );

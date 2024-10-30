@@ -26,7 +26,7 @@ const OrganizationsList = () => {
   useEffect(() => {
     document.title = "Organizations";
     fetchOrganizations();
-  }, []);
+  }, [deleting]);
 
   const handleDeleteOrganization = async (_id) => {
     setDeleting(true);

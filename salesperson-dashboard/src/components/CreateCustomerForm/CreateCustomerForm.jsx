@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import customerServices from "../../services/customerServices";
 import { useFormik } from "formik";
-import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const validate = (values) => {
   const errors = {};
@@ -54,9 +54,7 @@ const validate = (values) => {
 
 const CreateCustomerForm = () => {
   const loggedInUser = JSON.parse(Cookies.get("dgEmployee"));
-  if (loggedInUser) {
-    console.log(loggedInUser._id);
-  }
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -70,25 +68,15 @@ const CreateCustomerForm = () => {
     },
     validate,
     onSubmit: async (values, { resetForm }) => {
-      console.log("values >>", values);
-      const resolveAfter3Sec = new Promise(async (resolve, reject) => {
-        try {
-          const res = await customerServices.handleCreateCustomer(values);
-          console.log("res >> ", res);
-          // alert(res?.message);
-          resetForm();
-          resolve("Form submitted");
-        } catch (error) {
-          console.log("err >> ", error);
-          alert("Something went wrong");
-          reject("Something went wrong");
-        }
-      });
-      toast.promise(resolveAfter3Sec, {
-        pending: "Promise is pending",
-        success: "Promise resolved 👌",
-        error: "Promise rejected 🤯",
-      });
+      try {
+        const res = await customerServices.handleCreateCustomer(values);
+        console.log(res);
+        toast.success("Payment link created");
+        resetForm();
+      } catch (error) {
+        console.log(error);
+        toast.error("Payment link could not be created.");
+      }
     },
   });
 

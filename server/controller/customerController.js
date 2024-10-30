@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Customers = mongoose.model("Customers");
 const Employees = mongoose.model("Employees");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// https://stripe-test-pdm7.vercel.app
 
 module.exports.CreateCustomer = async (req, res) => {
   const { name, email, salesPerson, projectTitle, description, amount } =
@@ -24,16 +25,13 @@ module.exports.CreateCustomer = async (req, res) => {
   if (!amount) {
     return res.status(400).json({ message: "Amount is required" });
   }
-  console.log(req.body);
-  const host = req.headers.host;
-  console.log("host >", host);
 
   const sales_person = await Employees.findById(salesPerson).populate({
     path: "organization",
     model: "Organizations",
-    select: "organizationName organizationDomain organizationSuffix",
+    select:
+      "organizationName organizationDomain organizationSuffix organizationPhoneNumber organizationSupportEmail organizationAddress",
   });
-  // console.log("sales_person >>", sales_person);
 
   const numericAmount = parseFloat(amount);
   const unitAmount = numericAmount * 100;
@@ -83,8 +81,7 @@ module.exports.CreateCustomer = async (req, res) => {
     });
 
     // Step 5: Generate a payment form URL
-    // https://stripe-test-pdm7.vercel.app
-    const pageUrl = `https://${sales_person?.organization?.organizationDomain}/stripe-test-pdm7.vercel.app/${price.id}`;
+    const pageUrl = `https://${sales_person?.organization?.organizationDomain}.authorizedbilling.com/${price.id}`;
     customer.pageUrl = pageUrl;
     await customer.save();
 
@@ -125,36 +122,55 @@ module.exports.CreatePaymentIntent = async (req, res) => {
     // Step 2: Retrieve the price details
     const price = await stripe.prices.retrieve(priceId);
 
-    // Step 3: Create a payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    // Step 3: Create payment intent options
+    const paymentIntentOptions = {
       amount: price.unit_amount,
       currency: "usd",
       payment_method_types: ["card"],
       customer: customer.id,
-      statement_descriptor_suffix: descriptorSuffix,
+      setup_future_usage: "off_session",
       metadata: {
         priceId: priceId,
         productTitle: price.metadata.title,
         description: price.metadata.description,
       },
-    });
-    // const paymentIntent = await stripe.paymentIntents.create({
-    //   amount: price.unit_amount,
-    //   currency: "usd",
-    //   payment_method_types: ["card"],
-    //   customer: customer.id,
-    //   metadata: {
-    //     priceId: priceId,
-    //     productTitle: price.metadata.title,
-    //     description: price.metadata.description,
-    //   },
-    // });
+    };
 
-    // Step 4: Send the client secret to the client
+    if (descriptorSuffix) {
+      paymentIntentOptions.statement_descriptor_suffix = descriptorSuffix;
+    }
+
+    // Step 4: Create the payment intent with options
+    const paymentIntent = await stripe.paymentIntents.create(
+      paymentIntentOptions
+    );
+
+    // Step 5: Send the client secret to the client
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     console.log("create payment intent err >> ", error);
     res.status(500).json({ message: "Failed to create payment intent", error });
+  }
+};
+
+module.exports.TogglePaymentStatus = async (req, res) => {
+  try {
+    const { priceId } = req.params;
+    const { paymentStatus } = req.body;
+
+    const paymentLink = await Customers.findOne({ priceId });
+    if (!paymentLink) {
+      return res.status(404).json({ message: "Price not found" });
+    }
+    await Customers.findOneAndUpdate(
+      { priceId },
+      { paymentStatus: paymentStatus },
+      { new: true }
+    );
+    res.status(200).json({ message: "Payment status updated" });
+  } catch (error) {
+    console.log("togglePaymentStatus error >>", error);
+    res.status(500).json({ message: "Something went wrong", error });
   }
 };
 
@@ -179,7 +195,7 @@ module.exports.GetCustomers = async (req, res) => {
 module.exports.GetCustomerById = async (req, res) => {
   try {
     const { _id } = req.params;
-    console.log(_id);
+
     const customers = await Customers.find({ salesPerson: _id }).populate({
       path: "salesPerson",
       model: "Employees",
@@ -187,7 +203,8 @@ module.exports.GetCustomerById = async (req, res) => {
       populate: {
         path: "organization",
         model: "Organizations",
-        select: "organizationName organizationDomain organizationSuffix",
+        select:
+          "organizationName organizationDomain organizationSuffix organizationPhoneNumber organizationSupportEmail organizationAddress",
       },
     });
     res.status(200).json({ data: customers });
@@ -199,6 +216,7 @@ module.exports.GetCustomerById = async (req, res) => {
 module.exports.GetCustomerInfo = async (req, res) => {
   try {
     const { priceId } = req.params;
+    // console.log(priceId);
 
     if (!priceId || priceId == null) {
       return res.status(400).json({ message: "Price ID not found" });
@@ -212,7 +230,7 @@ module.exports.GetCustomerInfo = async (req, res) => {
         path: "organization",
         model: "Organizations",
         select:
-          "organizationName organizationDomain organizationSuffix organizationLogo organizationColors organizationPrivacyPolicy organizationTermsOfService",
+          "organizationName organizationDomain organizationSuffix organizationLogo organizationColors organizationPrivacyPolicy organizationTermsOfService organizationPhoneNumber organizationSupportEmail organizationAddress",
       },
     });
     if (!customer) {
@@ -227,7 +245,7 @@ module.exports.GetCustomerInfo = async (req, res) => {
 
 module.exports.ArchivePrice = async (req, res) => {
   const { priceId } = req.body;
-  console.log(priceId);
+  // console.log(priceId);
   try {
     if (!priceId) {
       return res.status(403).json({ message: "Please provide price id" });

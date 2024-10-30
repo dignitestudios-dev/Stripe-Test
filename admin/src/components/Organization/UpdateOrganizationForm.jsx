@@ -23,12 +23,12 @@ const validate = (values) => {
     errors.organizationLogo = "Required";
   }
 
-  if (!values.organizationColor1) {
-    errors.organizationColor1 = "Required";
+  if (!values.color1) {
+    errors.color1 = "Required";
   }
 
-  if (!values.organizationColor2) {
-    errors.organizationColor2 = "Required";
+  if (!values.color2) {
+    errors.color2 = "Required";
   }
 
   if (!values.organizationPrivacyPolicy) {
@@ -37,6 +37,18 @@ const validate = (values) => {
 
   if (!values.organizationTermsOfService) {
     errors.organizationTermsOfService = "Required";
+  }
+
+  if (!values.organizationPhoneNumber) {
+    errors.organizationPhoneNumber = "Required";
+  }
+
+  if (!values.organizationSupportEmail) {
+    errors.organizationSupportEmail = "Required";
+  }
+
+  if (!values.organizationAddress) {
+    errors.organizationAddress = "Required";
   }
 
   return errors;
@@ -53,16 +65,20 @@ const UpdateOrganizationForm = () => {
     try {
       const res = await axios.get(`${BASE_URL}/admin/organization/${_id}`);
       setData(res?.data);
+      // console.log(res.data);
       // Update form fields with fetched data
       formik.setValues({
         organizationName: res.data.organizationName || "",
         organizationDomain: res.data.organizationDomain || "",
         organizationSuffix: res.data.organizationSuffix || "",
         organizationLogo: `${res.data.organizationLogo}`,
-        organizationColor1: res.data.organizationColors?.color1 || "",
-        organizationColor2: res.data.organizationColors?.color2 || "",
+        color1: res.data.organizationColors?.color1 || "",
+        color2: res.data.organizationColors?.color2 || "",
         organizationPrivacyPolicy: res.data.organizationPrivacyPolicy || "",
         organizationTermsOfService: res.data.organizationTermsOfService || "",
+        organizationPhoneNumber: res.data.organizationPhoneNumber || "",
+        organizationSupportEmail: res.data.organizationSupportEmail || "",
+        organizationAddress: res.data.organizationAddress || "",
       });
     } catch (error) {
       console.log("Error while fetching organization data:", error);
@@ -74,6 +90,7 @@ const UpdateOrganizationForm = () => {
     if (file) {
       formik.setFieldValue("organizationLogo", file);
       const fileURL = URL.createObjectURL(file);
+      console.log("fileUrl >>", fileURL);
       setPreview(fileURL);
     }
   };
@@ -89,30 +106,48 @@ const UpdateOrganizationForm = () => {
       organizationDomain: "",
       organizationSuffix: "",
       organizationLogo: null,
-      organizationColor1: "",
-      organizationColor2: "",
+      color1: "",
+      color2: "",
       organizationPrivacyPolicy: "",
       organizationTermsOfService: "",
+      organizationPhoneNumber: "",
+      organizationSupportEmail: "",
+      organizationAddress: "",
     },
     validate,
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
       const formData = new FormData();
-      formData.append("organizationName", formik.values.organizationName);
-      formData.append("organizationDomain", formik.values.organizationDomain);
-      formData.append("organizationSuffix", formik.values.organizationSuffix);
-      formData.append("organizationColor1", formik.values.organizationColor1);
-      formData.append("organizationColor2", formik.values.organizationColor2);
+
+      formData.append("organizationName", values.organizationName);
+      formData.append("organizationDomain", values.organizationDomain);
+      formData.append("organizationSuffix", values.organizationSuffix);
+
+      // Handle nested organization colors
+      formData.append("organizationColors[color1]", values.color1);
+      formData.append("organizationColors[color2]", values.color2);
+
+      formData.append(
+        "organizationSupportEmail",
+        values.organizationSupportEmail
+      );
+      formData.append("organizationAddress", values.organizationAddress);
+      formData.append(
+        "organizationPhoneNumber",
+        values.organizationPhoneNumber
+      );
       formData.append(
         "organizationPrivacyPolicy",
-        formik.values.organizationPrivacyPolicy
+        values.organizationPrivacyPolicy
       );
       formData.append(
         "organizationTermsOfService",
-        formik.values.organizationTermsOfService
+        values.organizationTermsOfService
       );
-      if (formik.values.organizationLogo) {
-        formData.append("organizationLogo", formik.values.organizationLogo);
+
+      // Add file if it exists
+      if (values.organizationLogo) {
+        formData.append("organizationLogo", values.organizationLogo);
       }
 
       try {
@@ -122,7 +157,6 @@ const UpdateOrganizationForm = () => {
         );
         if (res.status === 200) {
           toast.success("Organization updated successfully!");
-          // resetForm();
           navigate("/organizations");
         }
       } catch (error) {
@@ -136,7 +170,7 @@ const UpdateOrganizationForm = () => {
 
   return (
     <div className="bg-white p-6 lg:p-10 rounded-xl min-h-screen">
-      <h2 className="text-lg font-semibold">Add Organization</h2>
+      <h2 className="text-lg font-semibold">Update Organization</h2>
 
       <form
         onSubmit={formik.handleSubmit}
@@ -214,7 +248,7 @@ const UpdateOrganizationForm = () => {
           <div class="w-full">
             <label
               class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="organizationColor1"
+              htmlFor="color1"
             >
               Organization Color Codes
             </label>
@@ -222,32 +256,32 @@ const UpdateOrganizationForm = () => {
               <div>
                 <input
                   class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
-                  id="organizationColor1"
+                  id="color1"
                   type="text"
                   placeholder="Color 1"
-                  name="organizationColor1"
+                  name="color1"
                   onChange={formik.handleChange}
-                  value={formik.values.organizationColor1}
+                  value={formik.values.color1}
                 />
-                {formik.errors.organizationColor1 ? (
+                {formik.errors.color1 ? (
                   <div class="red-text text-xs italic">
-                    {formik.errors.organizationColor1}
+                    {formik.errors.color1}
                   </div>
                 ) : null}
               </div>
               <div>
                 <input
                   class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
-                  id="organizationColor2"
+                  id="color2"
                   type="text"
                   placeholder="Color 2"
-                  name="organizationColor2"
+                  name="color2"
                   onChange={formik.handleChange}
-                  value={formik.values.organizationColor2}
+                  value={formik.values.color2}
                 />
-                {formik.errors.organizationColor2 ? (
+                {formik.errors.color2 ? (
                   <div class="red-text text-xs italic">
-                    {formik.errors.organizationColor2}
+                    {formik.errors.color2}
                   </div>
                 ) : null}
               </div>
@@ -300,6 +334,74 @@ const UpdateOrganizationForm = () => {
             ) : null}
           </div>
         </div>
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="w-full">
+            <label
+              class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              htmlFor="organizationPhoneNumber"
+            >
+              Phone No.
+            </label>
+            <input
+              class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
+              id="organizationPhoneNumber"
+              type="text"
+              placeholder="LaunchBox"
+              name="organizationPhoneNumber"
+              onChange={formik.handleChange}
+              value={formik.values.organizationPhoneNumber}
+            />
+            {formik.errors.organizationPhoneNumber ? (
+              <div class="red-text text-xs italic">
+                {formik.errors.organizationPhoneNumber}
+              </div>
+            ) : null}
+          </div>
+          <div class="w-full">
+            <label
+              class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              htmlFor="organizationSupportEmail"
+            >
+              Support Email
+            </label>
+            <input
+              class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
+              id="organizationSupportEmail"
+              type="text"
+              placeholder="Color 1"
+              name="organizationSupportEmail"
+              onChange={formik.handleChange}
+              value={formik.values.organizationSupportEmail}
+            />
+            {formik.errors.organizationSupportEmail ? (
+              <div class="red-text text-xs italic">
+                {formik.errors.organizationSupportEmail}
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <div class="w-full">
+          <label
+            class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            htmlFor="organizationTermsOfService"
+          >
+            Organization address
+          </label>
+          <input
+            class="appearance-none block w-full bg-gray-100 text-gray-700 text-sm border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-[#B2162D]"
+            id="organizationAddress"
+            type="text"
+            placeholder="Color 1"
+            name="organizationAddress"
+            onChange={formik.handleChange}
+            value={formik.values.organizationAddress}
+          />
+          {formik.errors.organizationAddress ? (
+            <div class="red-text text-xs italic">
+              {formik.errors.organizationAddress}
+            </div>
+          ) : null}
+        </div>
 
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="w-full flex flex-col items-start gap-2 5">
@@ -311,9 +413,9 @@ const UpdateOrganizationForm = () => {
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   {preview ? (
                     <img
-                      src={`http://localhost:2000/${preview}`}
-                      alt="Preview"
-                      className="w-24 h-24 mb-4 object-contain rounded"
+                      src={preview}
+                      alt="Organization Logo Preview"
+                      className="w-20 h-20 rounded-full"
                     />
                   ) : (
                     <>

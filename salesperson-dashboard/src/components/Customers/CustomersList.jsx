@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import customerServices from "../../services/customerServices";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const CustomersList = () => {
   const [customers, setCustomers] = useState([]);
   const myInfo = JSON.parse(Cookies.get("dgEmployee"));
-  console.log(myInfo);
 
   const fetchCustomers = async () => {
     try {
@@ -26,14 +26,14 @@ const CustomersList = () => {
       console.log(priceId);
       const res = await customerServices.handleDeleteFormUrl(priceId);
       console.log("deleted res >> ", res);
-      alert(res.message);
+      toast.success("Product deleted successfully");
 
       setCustomers((prevCustomers) =>
         prevCustomers.filter((customer) => customer.priceId !== priceId)
       );
     } catch (error) {
       console.log("delete api err >>", error);
-      alert(error.message || "Something went wrong");
+      toast.error(error.message || "Something went wrong");
     }
   };
 
@@ -86,15 +86,29 @@ const CustomersList = () => {
                           href={c?.pageUrl}
                           className="underline"
                         >
-                          Open Form
+                          Open Link
                         </a>
                       </td>
                       <td className="px-6 py-4 text-xs">
                         <button
                           disabled="disabled"
-                          className="text-yellow-500 font-medium text-xs"
+                          className={`font-medium text-xs px-4 py-2 rounded-lg ${
+                            c?.paymentStatus == "Success"
+                              ? "bg-green-100 text-green-500"
+                              : c?.paymentStatus == "Pending"
+                              ? "text-yellow-500 bg-yellow-100"
+                              : c?.paymentStatus == "Failed"
+                              ? "bg-red-100 text-red-500"
+                              : ""
+                          }`}
                         >
-                          Pending
+                          {c?.paymentStatus == "Success"
+                            ? "Paid"
+                            : c?.paymentStatus == "Pending"
+                            ? "Pending"
+                            : c?.paymentStatus == "Failed"
+                            ? "Failed"
+                            : ""}
                         </button>
                       </td>
                       <td className="px-6 py-4 text-xs lg:pl-7">
