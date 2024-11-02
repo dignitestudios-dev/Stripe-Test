@@ -57,7 +57,7 @@ module.exports.CreateCustomer = async (req, res) => {
     // Step 2: Create a new product on Stripe
     const product = await stripe.products.create({
       name: projectTitle || description,
-      description: `Product ordered by ${name}`,
+      description: description || "",
     });
 
     // Step 3: Create a price for the product

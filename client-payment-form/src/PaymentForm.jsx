@@ -270,7 +270,7 @@ const PaymentForm = () => {
                 {isProcessing ? "Processing..." : "Pay Now"}
               </button>
             </div>
-            <div className="w-full mt-10 border-2 p-3 rounded-xl border-blue-700 text-center">
+            <div className="w-full mt-10 text-center">
               <p className="text-sm text-gray-600 font-medium">
                 Powered by{" "}
                 <a
