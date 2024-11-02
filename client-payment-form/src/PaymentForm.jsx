@@ -166,7 +166,7 @@ const PaymentForm = () => {
             <p className="text-xl font-medium">${amount}.00</p>
           </div>
 
-          <div className="w-full hidden lg:block">
+          <div className="w-full hidden lg:block flex flex-col items-start gap-2">
             <p className="text-sm text-gray-600">
               <span className="font-semibold">Phone No: </span>{" "}
               {org?.organizationPhoneNumber}
@@ -291,19 +291,21 @@ const PaymentForm = () => {
       <div className="w-full lg:hidden">
         <SocialLinks org={org} />
       </div>
-      <div className="w-full padding-x mt-5 lg:hidden">
-        <p className="text-sm text-gray-600 my-1.5">
-          <span className="font-semibold">Support Email: </span>{" "}
-          {org?.organizationSupportEmail}
-        </p>
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold">Phone No: </span>{" "}
-          {org?.organizationPhoneNumber}
-        </p>
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold">Address: </span>{" "}
-          {org?.organizationAddress}
-        </p>
+      <div className="lg:hidden px-1">
+        <div className="w-full padding-x mt-5 flex flex-col items-start gap-2 ">
+          <p className="text-sm text-gray-600 my-1.5">
+            <span className="font-semibold">Support Email: </span>{" "}
+            {org?.organizationSupportEmail}
+          </p>
+          <p className="text-sm text-gray-600">
+            <span className="font-semibold">Phone No: </span>{" "}
+            {org?.organizationPhoneNumber}
+          </p>
+          <p className="text-sm text-gray-600">
+            <span className="font-semibold">Address: </span>{" "}
+            {org?.organizationAddress}
+          </p>
+        </div>
       </div>
     </div>
   );
