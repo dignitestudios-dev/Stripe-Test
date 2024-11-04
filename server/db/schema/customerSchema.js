@@ -15,6 +15,7 @@ const CustomerSchema = new mongoose.Schema(
     },
     projectTitle: { type: String },
     paymentStatus: { type: String, default: "Pending", required: false },
+    createdAt: { type: Date, default: Date.now },
   },
   { collection: "Customers" }
 );

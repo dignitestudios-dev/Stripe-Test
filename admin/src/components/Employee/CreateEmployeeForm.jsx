@@ -105,8 +105,9 @@ const CreateEmployeeForm = () => {
 
         // Success case
         const data = await response.json();
-        console.log("Employee created:", data);
+        // console.log("Employee created:", data);
         toast.success(data.message);
+        navigate("/");
         resetForm(); // Reset the form after successful submission
       } catch (error) {
         console.log("Network or server error: ", error);

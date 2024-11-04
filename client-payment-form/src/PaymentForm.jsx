@@ -20,6 +20,7 @@ const PaymentForm = () => {
   const [descriptorSuffix, setDescriptorSuffix] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
   const [org, setOrg] = useState(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
     // if (org) {
@@ -149,10 +150,17 @@ const PaymentForm = () => {
         <div className="flex flex-col items-start justify-between gap-4 w-full">
           <div className="flex flex-col items-start justify-center gap-6 w-full">
             <div className="flex justify-start">
+              {!isImageLoaded && (
+                <div className="w-[50%] h-[50%] bg-gray-200" />
+              )}
+
               <img
                 src={`${IMAGE_BASE_URL}/${org?.organizationLogo}`}
                 alt="logo"
-                className="bg-contain max-w-[50%]"
+                className={`bg-contain max-w-[50%] ${
+                  isImageLoaded ? "" : "hidden"
+                }`}
+                onLoad={() => setIsImageLoaded(true)}
               />
             </div>
             <div className="flex items-center justify-between lg:mt-5 w-full">
@@ -166,7 +174,7 @@ const PaymentForm = () => {
             <p className="text-xl font-medium">${amount}.00</p>
           </div>
 
-          <div className="w-full hidden lg:block flex flex-col items-start gap-2">
+          <div className="w-full hidden lg:flex flex-col items-start gap-2">
             <p className="text-sm text-gray-600">
               <span className="font-semibold">Phone No: </span>{" "}
               {org?.organizationPhoneNumber}
@@ -284,12 +292,42 @@ const PaymentForm = () => {
             </div>
           </form>
           <div className="w-full hidden lg:block">
-            <SocialLinks />
+            <div className="w-full flex items-center justify-center gap-x-6 mt-7 px-5 lg:px-0">
+              <a
+                target="_blank"
+                href={`${org?.organizationPrivacyPolicy}`}
+                className="text-xs text-gray-600"
+              >
+                Privacy Policy
+              </a>
+              <a
+                target="_blank"
+                href={`${org?.organizationTermsOfService}`}
+                className="text-xs text-gray-600"
+              >
+                Terms & Conditions
+              </a>
+            </div>
           </div>
         </div>
       </div>
       <div className="w-full lg:hidden">
-        <SocialLinks org={org} />
+        <div className="w-full flex items-center justify-center gap-x-6 mt-7 px-5 lg:px-0">
+          <a
+            target="_blank"
+            href={`${org?.organizationPrivacyPolicy}`}
+            className="text-xs text-gray-600"
+          >
+            Privacy Policy
+          </a>
+          <a
+            target="_blank"
+            href={`${org?.organizationTermsOfService}`}
+            className="text-xs text-gray-600"
+          >
+            Terms & Conditions
+          </a>
+        </div>
       </div>
       <div className="lg:hidden px-1">
         <div className="w-full padding-x mt-5 flex flex-col items-start gap-2 ">

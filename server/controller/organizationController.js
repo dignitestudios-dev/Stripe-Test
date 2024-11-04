@@ -17,7 +17,7 @@ module.exports.addOrganization = async (req, res) => {
       organizationSupportEmail,
       organizationAddress,
     } = req.body;
-    console.log(req.body);
+    // console.log("Org data >>", req.body);
 
     const alreadyExist = await Organizations.findOne({ organizationName });
     if (alreadyExist) {
