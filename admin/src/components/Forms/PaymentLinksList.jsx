@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../api/api";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import ListSkeleton from "../Global/ListSkeleton";
 
@@ -41,9 +41,27 @@ const PaymentLinksList = () => {
     fetchEmployees();
   }, []);
 
+  function formatDate(createdAt) {
+    const date = new Date(createdAt);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const year = String(date.getFullYear()).slice(-2); // Get the last two digits of the year
+
+    return `${day}-${month}-${year}`;
+  }
+
   return (
     <div className="bg-white p-6 rounded-xl min-h-screen">
-      <h2 className="text-lg font-semibold">Payment Links</h2>
+      <div className="w-full flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Payment Links</h2>
+        {/* <Link
+          to="/create-payment-link"
+          className="red-bg text-white text-xs font-medium px-4 py-3 rounded-lg"
+        >
+          Create Payment Link
+        </Link> */}
+      </div>
       {loading ? (
         <ListSkeleton />
       ) : (
@@ -116,11 +134,16 @@ const PaymentLinksList = () => {
                             : "N/A"}
                         </td>
                         <td className="text-xs font-medium py-4">
+                          {employee?.createdAt
+                            ? formatDate(employee?.createdAt)
+                            : "N/A"}
+                        </td>
+                        <td className="text-xs font-medium py-4">
                           <a
                             href={employee?.pageUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium text-sm underline"
+                            className="font-medium text-xs underline"
                           >
                             Open Form
                           </a>

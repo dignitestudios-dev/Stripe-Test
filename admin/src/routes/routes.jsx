@@ -12,6 +12,7 @@ import UpdatePasswordPage from "../pages/auth/UpdatePasswordPage";
 import OrganizationsPage from "../pages/organization/OrganizationsPage";
 import AddOrganizationPage from "../pages/organization/AddOrganizationPage";
 import UpdateOrganizationPage from "../pages/organization/UpdateOrganizationPage";
+import CreatePaymentLinkPage from "../pages/forms/CreatePaymentLinkPage";
 
 const isAuthenticated = () => {
   return Cookies.get("digniteToken") !== undefined;
@@ -82,6 +83,16 @@ const AppRoutes = () => {
         element={
           <AuthRoute
             element={<Layout pages={<PaymentLinksPage />} />}
+            redirectTo={"/login"}
+          />
+        }
+      />
+
+      <Route
+        path="/create-payment-link"
+        element={
+          <AuthRoute
+            element={<Layout pages={<CreatePaymentLinkPage />} />}
             redirectTo={"/login"}
           />
         }
