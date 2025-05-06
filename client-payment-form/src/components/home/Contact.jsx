@@ -3,6 +3,7 @@ import ContactForm from "./ContactForm";
 import { MdEmail } from "react-icons/md";
 import { IoMdCall } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { MdLocationOn } from "react-icons/md";
 
 const Contact = () => {
   return (
@@ -42,6 +43,15 @@ const Contact = () => {
                 <Link to={`tel:8888688385`} className="text-lg font-medium">
                   (888) 868-8385
                 </Link>
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <MdLocationOn className="text-3xl text-blue-600" />
+            <div className="flex flex-col items-start gap-0">
+              <p className="text-gray-500 font-normal text-sm">Address</p>
+              <p className="text-lg font-medium">
+                1621 Central Ave, Suite 8527 Cheyenne, WY 82001
               </p>
             </div>
           </div>
